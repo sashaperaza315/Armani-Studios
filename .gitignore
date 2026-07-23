@@ -1,0 +1,19 @@
+# Godot 4+ specific ignores
+.godot/
+.import/
+export_presets.cfg
+*.translation
+*.mo
+
+# Build output
+/builds/*
+!/builds/.gitkeep
+
+# OS/editor junk
+.DS_Store
+Thumbs.db
+*.tmp
+
+# Blender autosave
+*.blend1
+*.blend2
