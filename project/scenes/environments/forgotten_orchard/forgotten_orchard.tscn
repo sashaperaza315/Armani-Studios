@@ -13,7 +13,7 @@ ambient_light_color = Color(0.25, 0.28, 0.3, 1)
 ambient_light_energy = 0.5
 fog_enabled = true
 fog_light_color = Color(0.45, 0.48, 0.5, 1)
-fog_density = 0.035
+fog_density = 0.022
 fog_sky_affect = 1.0
 tonemap_mode = 2
 
@@ -28,8 +28,11 @@ albedo_color = Color(0.16, 0.15, 0.12, 1)
 roughness = 1.0
 
 [sub_resource type="StandardMaterial3D" id="FenceMat"]
-albedo_color = Color(0.1, 0.09, 0.08, 1)
-roughness = 1.0
+albedo_color = Color(0.32, 0.29, 0.25, 1)
+roughness = 0.85
+emission_enabled = true
+emission = Color(0.18, 0.17, 0.15, 1)
+emission_energy_multiplier = 0.3
 
 [sub_resource type="BoxShape3D" id="FenceShapeNS"]
 size = Vector3(34, 2.5, 0.3)

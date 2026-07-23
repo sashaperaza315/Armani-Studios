@@ -1,23 +1,24 @@
 extends CharacterBody3D
 ## The Watcher — Sprint 0's only creature. GDD section 5.1 / Armani's
-## Creative Decision #4-5.
+## Creative Decision #4-5. Health/defeat added in Creative Decision
+## Session #003 (post-Sprint-0 playtest, provisional pending next test).
 ##
-## Three-zone rule (GDD 5.1 "Behavior rules", SPRINT_0.md: "this is the
-## entire game — get the feel right before anything else"):
+## Three-zone rule (GDD 5.1 "Behavior rules"):
 ##   1. IDLE   — outside laser range, unaware, patrols its home area.
 ##   2. TRACK  — inside laser range but outside the safe zone: tracks,
-##               telegraphs, fires a laser. Player must break line of
-##               sight or use cover.
+##               telegraphs, fires a laser.
 ##   3. SAFE   — inside laser-disable range but outside kick range: the
-##               core exploit. Laser is off, kick can't reach yet. It just
-##               stares. This is the "get close to stop the laser, but not
-##               too close" risk/reward band the design calls out by name.
-##   4. KICK   — inside kick range: laser is impossible, it kicks instead.
-## Distance thresholds are tuning knobs — playtest with Armani per
-## SPRINT_0.md step 7 before treating any number here as final.
+##               core exploit. Laser is off, kick can't reach yet.
+##   4. KICK   — inside kick range: kicks instead of firing.
+##
+## ACTIVATION_DELAY is a bugfix, not a design pivot: Armani's Decision #3
+## asked for a few quiet seconds before any Watcher tension starts, and
+## the original Sprint 0 build broke that on a map this small relative to
+## LASER_RANGE. This restores the intended pacing.
 
 enum State { IDLE, TRACK, SAFE, KICK }
 
+const ACTIVATION_DELAY := 8.0
 const KICK_RANGE := 2.0
 const LASER_DISABLE_RANGE := 4.5  # upper bound of the safe zone
 const LASER_RANGE := 12.0
@@ -28,6 +29,7 @@ const KICK_COOLDOWN := 1.4
 const PATROL_WAIT_MIN := 2.0
 const PATROL_WAIT_MAX := 4.5
 const PATROL_RADIUS := 7.0
+const MAX_HEALTH := 3
 
 @onready var los_ray: RayCast3D = $LineOfSightRay
 @onready var laser_beam: MeshInstance3D = $LaserBeam
@@ -43,6 +45,9 @@ var kick_timer := 0.0
 var telegraphing := false
 var telegraph_timer := 0.0
 var flash_timer := 0.0
+var activation_timer := ACTIVATION_DELAY
+var health := MAX_HEALTH
+var defeated := false
 
 
 func _ready() -> void:
@@ -61,10 +66,26 @@ func _find_player() -> void:
 
 
 func on_lantern_hit() -> void:
-	# Detectable reaction to the lantern beam (SPRINT_0.md requirement).
-	# Placeholder flicker on the blockout mesh; swap for material flash +
-	# audio cue once real art/audio lands (see GDD section 8).
 	flash_timer = 0.35
+
+
+func take_damage(amount: int) -> void:
+	if defeated:
+		return
+	health -= amount
+	flash_timer = 0.3
+	if health <= 0:
+		_defeat()
+
+
+func _defeat() -> void:
+	defeated = true
+	telegraphing = false
+	laser_beam.visible = false
+	set_physics_process(false)
+	var tween := create_tween()
+	tween.tween_property(self, "scale", Vector3(0.05, 0.05, 0.05), 0.6)
+	GameManager.watcher_defeated()
 
 
 func _physics_process(delta: float) -> void:
@@ -77,6 +98,12 @@ func _physics_process(delta: float) -> void:
 		eye.scale = Vector3.ONE * (1.0 + 0.06 * sin(flash_timer * 40.0))
 	else:
 		eye.scale = Vector3.ONE
+
+	if activation_timer > 0.0:
+		activation_timer -= delta
+		_process_idle(delta)
+		move_and_slide()
+		return
 
 	var distance := global_position.distance_to(player.global_position)
 	var can_see := _has_line_of_sight()
@@ -152,7 +179,6 @@ func _pick_new_patrol_point() -> void:
 
 
 func _process_safe() -> void:
-	# The exploit zone: laser is disabled, kick can't reach. It just stares.
 	velocity.x = 0.0
 	velocity.z = 0.0
 	_face_player()
@@ -190,7 +216,7 @@ func _fire_laser() -> void:
 			laser_beam.visible = false
 	)
 	if hit and global_position.distance_to(player.global_position) <= LASER_RANGE:
-		GameManager.player_caught("The Watcher's laser found you.")
+		GameManager.player_hit(1, "The Watcher's laser found you.")
 
 
 func _aim_laser_beam() -> void:
@@ -212,4 +238,4 @@ func _process_kick(delta: float) -> void:
 	kick_timer -= delta
 	if kick_timer <= 0.0:
 		kick_timer = KICK_COOLDOWN
-		GameManager.player_caught("The Watcher kicked you.")
+		GameManager.player_hit(1, "The Watcher kicked you.")

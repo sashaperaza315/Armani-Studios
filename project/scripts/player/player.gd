@@ -1,27 +1,35 @@
 extends CharacterBody3D
-## The Young Warden — Sprint 0 first-person controller.
-## Camera perspective is LOCKED to first-person (Armani, Creative Decision #1).
-## Scope: walk/run, look, collide with orchard geometry, single interact
-## input that toggles the Spirit Lantern (or triggers a nearby interactable).
+## The Young Warden — Sprint 0.5 controller.
+## Camera is now TOGGLABLE between first-person (original Creative
+## Decision #1) and third-person (Armani's playtest request — see
+## Creative Decision Session #003 in ARMANI_CREATIVE_DECISIONS.md).
+## Also adds the Lantern Ember Bolt weapon from that same session.
 
 const SPEED := 4.2
 const SPRINT_SPEED := 6.4
 const MOUSE_SENSITIVITY := 0.0025
 const GRAVITY := 9.8
 const INTERACT_RANGE := 2.5
+const ATTACK_COOLDOWN := 1.0
 
 @onready var head: Node3D = $Head
-@onready var camera: Camera3D = $Head/Camera3D
+@onready var fps_camera: Camera3D = $Head/Camera3D
+@onready var third_person_camera: Camera3D = $Head/ThirdPersonRig/Camera3D
+@onready var warden_body: MeshInstance3D = $WardenBody
 @onready var interact_ray: RayCast3D = $Head/Camera3D/InteractRay
+@onready var attack_ray: RayCast3D = $Head/Camera3D/AttackRay
 @onready var lantern = $Head/Camera3D/SpiritLantern
 
 var lantern_on := false
+var third_person := false
+var attack_timer := 0.0
 
 
 func _ready() -> void:
 	add_to_group("player")
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	lantern.set_on(false)
+	_apply_camera_mode()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -34,6 +42,18 @@ func _unhandled_input(event: InputEvent) -> void:
 			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 		else:
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	if event.is_action_pressed("toggle_camera"):
+		third_person = not third_person
+		_apply_camera_mode()
+
+
+func _apply_camera_mode() -> void:
+	fps_camera.current = not third_person
+	third_person_camera.current = third_person
+	# Decision #1's "no seeing your own body" only applies in first-person;
+	# the Warden model exists solely for the third-person mode added in
+	# Creative Decision Session #003.
+	warden_body.visible = third_person
 
 
 func _physics_process(delta: float) -> void:
@@ -55,8 +75,13 @@ func _physics_process(delta: float) -> void:
 
 	move_and_slide()
 
+	if attack_timer > 0.0:
+		attack_timer -= delta
+
 	if Input.is_action_just_pressed("interact"):
 		_handle_interact()
+	if Input.is_action_just_pressed("attack") and attack_timer <= 0.0:
+		_handle_attack()
 
 
 func _handle_interact() -> void:
@@ -67,3 +92,15 @@ func _handle_interact() -> void:
 			return
 	lantern_on = not lantern_on
 	lantern.set_on(lantern_on)
+
+
+func _handle_attack() -> void:
+	# Lantern Ember Bolt — Creative Decision Session #003, Decision 8.
+	# Provisional per that decision's own note: evaluate at next playtest
+	# before treating this as locked canon the way Decisions 1-7 are.
+	attack_timer = ATTACK_COOLDOWN
+	attack_ray.force_raycast_update()
+	if attack_ray.is_colliding():
+		var hit := attack_ray.get_collider()
+		if hit and hit.is_in_group("watcher") and hit.has_method("take_damage"):
+			hit.take_damage(1)

@@ -107,3 +107,45 @@ Next step: update `docs/design/GDD.md` open questions and `docs/design/SPRINT_0.
 | Win trigger | Open (exit point vs. timer) | **Survive the time** — a set survival timer, no exit point |
 
 New open question raised by this decision: **should the countdown timer be visible on-screen, or communicated some other way (audio cue, environmental change)?** Flag for a future quick decision or producer's discretion during Sprint 0 build, revisit with Armani if it changes the feel.
+
+---
+
+# Session #003 — First Playtest Feedback (post-Sprint-0)
+
+**Session date:** 2026-07-23
+**Context:** Armani's first hands-on playthrough of the Sprint 0 build. This session reverses two previously locked decisions (#1 and #6). Per this document's own rule, that's only valid because it's going back through Armani directly — recorded here rather than quietly rebuilt.
+
+## Decision 7 — Camera Perspective, Revisited
+
+**Original decision (#1):** first-person only, deliberately, for intensity.
+**Armani's playtest feedback:** wants to see his character — requests third-person.
+**Resolution:** **both, as a togglable option** (not a full replacement). First-person remains available; third-person is added. Producer's note: this preserves Decision #1 as a valid mode rather than erasing it, and lets Armani compare the two directly instead of us guessing which one is "correct" for Hollowhunt.
+
+## Decision 8 — Combat
+
+**Not previously decided; GDD explicitly framed Hollowhunt as "Discover and Escape," not combat, and Design Pillar #1/#2 lean away from generic fight mechanics.**
+**Armani's playtest feedback:** wants weapons, a way to fight The Watcher, and to "advance."
+**Resolution:** **real weapon + defeat mechanic**, added as an alternate path through the encounter (not a replacement for evasion). Producer's flag for Armani: this is a meaningful swing away from the original "you can't fight it, only outsmart it" pitch — worth an explicit conversation on whether Hollowhunt is now partly a combat game, or whether combat should stay a Sprint-0.5 experiment to be evaluated (and possibly walked back) at the next playtest rather than treated as locked canon yet.
+
+## Decision 9 — Win Condition, Revisited
+
+**Original decision (#6):** survive a set timer, no exit point.
+**Armani's playtest feedback:** 2 minutes felt long with nothing to do.
+**Resolution:** survive-the-timer stays as one win path, **plus a new discoverable objective** — find all 3 Hollow secrets (already-built lantern-reveal props) to trigger an escape win. Defeating The Watcher (Decision 8) is now a third win path. Sprint 0 now has three ways to win: survive, discover, or defeat.
+
+## Decision 10 — Health
+
+**Not previously decided; original design was instant-loss on any hit.**
+**Armani's playtest feedback:** wants a health meter instead of one-hit loss.
+**Resolution:** simple 3-hit health bar. Each Watcher hit (laser or kick) costs 1 of 3.
+
+## Summary — What Changes Now
+
+| Area | Before this session | Now (canon, pending Armani's next playtest confirmation) |
+|---|---|---|
+| Camera | First-person only | First-person **and** third-person, togglable |
+| Combat | None — pure evasion | Lantern Ember Bolt weapon; can defeat The Watcher |
+| Win condition | Survive timer only | Survive timer, OR find 3 secrets, OR defeat The Watcher |
+| Health | Instant loss on any hit | 3-hit health bar |
+
+**Open flag for Armani (not resolved by this session, needs his direct answer next):** does the addition of real combat change what Hollowhunt *is* as a franchise, or is this a Sprint-0.5 experiment we might partially undo after seeing it played? Recommend treating Decision 8 as provisional until the next playtest, unlike Decisions 1-7 which were locked immediately.

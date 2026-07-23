@@ -1,8 +1,7 @@
 extends Node3D
 ## Attach to any prop that should be invisible until lit by the Spirit
-## Lantern. Sprint 0: 2-3 of these placed in The Forgotten Orchard.
-
-@export var stays_revealed := true
+## Lantern. Feeds GameManager's "find 3 Hollow secrets" escape objective
+## (Creative Decision Session #003).
 
 var revealed := false
 
@@ -13,7 +12,8 @@ func _ready() -> void:
 
 
 func on_lit() -> void:
-	if revealed and stays_revealed:
+	if revealed:
 		return
 	revealed = true
 	visible = true
+	GameManager.secret_found()
