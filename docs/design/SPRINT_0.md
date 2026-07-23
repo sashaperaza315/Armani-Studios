@@ -77,6 +77,9 @@ Do not build any of these yet, even if it's tempting:
 | Does lantern have any limitation in Sprint 0? | **No — pure on/off**, per the doc's own default. | 2026-07-23 |
 
 ## Playtest checklist (run this with Armani when Sprint 0 is "done")
+
+**Full playtest package (instructions, feedback questions, bug watch-list, tuning variables):** see `docs/design/PLAYTEST_SPRINT_0.md`. Use that for the actual session — the checklist below is the quick closing gate.
+
 - [ ] Did you understand the lantern's purpose without being told?
 - [ ] Did you figure out The Watcher's laser/kick rule through play, or did it feel random?
 - [ ] Was there a moment that felt tense or exciting?
