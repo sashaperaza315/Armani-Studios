@@ -57,7 +57,11 @@ func secret_found() -> void:
 
 
 func watcher_defeated() -> void:
-	_win("You defeated The Watcher.")
+	# Placeholder victory screen (Creative Decision Session #003, "next
+	# level" follow-up) — no second location exists yet (that's Phase 3
+	# on ROADMAP.md), so this sets the right expectation instead of just
+	# ending flatly with no sense of what's next.
+	_win("You defeated The Watcher.\n\nMore Hollowhunt is coming soon.")
 
 
 func _win(reason: String) -> void:
