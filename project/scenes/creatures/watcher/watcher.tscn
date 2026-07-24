@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="Script" path="res://scripts/creatures/watcher.gd" id="1"]
 
@@ -14,6 +14,25 @@ albedo_color = Color(0.9, 0.9, 0.85, 1)
 emission_enabled = true
 emission = Color(0.6, 0.05, 0.05, 1)
 emission_energy_multiplier = 0.4
+
+[sub_resource type="SphereMesh" id="IrisMesh"]
+radius = 0.28
+height = 0.56
+
+[sub_resource type="StandardMaterial3D" id="IrisMat"]
+albedo_color = Color(0.36, 0.11, 0.09, 1)
+emission_enabled = true
+emission = Color(0.55, 0.08, 0.06, 1)
+emission_energy_multiplier = 0.6
+roughness = 0.4
+
+[sub_resource type="SphereMesh" id="PupilMesh"]
+radius = 0.13
+height = 0.26
+
+[sub_resource type="StandardMaterial3D" id="PupilMat"]
+albedo_color = Color(0.02, 0.01, 0.01, 1)
+roughness = 0.2
 
 [sub_resource type="CylinderMesh" id="LegMesh"]
 top_radius = 0.12
@@ -45,6 +64,16 @@ shape = SubResource("SphereShape3D_1")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0)
 mesh = SubResource("SphereMesh_1")
 surface_material_override/0 = SubResource("EyeMat")
+
+[node name="Iris" type="MeshInstance3D" parent="EyeBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.48)
+mesh = SubResource("IrisMesh")
+surface_material_override/0 = SubResource("IrisMat")
+
+[node name="Pupil" type="MeshInstance3D" parent="EyeBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.6)
+mesh = SubResource("PupilMesh")
+surface_material_override/0 = SubResource("PupilMat")
 
 [node name="LegLeft" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 0.45, 0)
